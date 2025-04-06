@@ -13,7 +13,7 @@ const Tweets: React.FC = () => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch tweets for the current page
+  // Fetch tweets for the current pagem, is this being used?
   const fetchTweets = (page: number) => {
     setIsLoading(true);
     socket.emit("getTweets", { page, limit: 9 });

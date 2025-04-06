@@ -61,9 +61,8 @@ export function Dashboard() {
       .padStart(2, "0")}`;
   };
 
-  // get hval data
   useEffect(() => {
-    socket.on("hvals", (receivedHvals: Hval[]) => {
+    const handleHvals = (receivedHvals: Hval[]) => {
       const formattedHvals = receivedHvals.map((hval) => ({
         ...hval,
         post_date: formatDate(hval.post_date),
@@ -73,10 +72,23 @@ export function Dashboard() {
       }
 
       setHvals(formattedHvals);
-    });
-    socket.on("tweets", (data: { newTweets: Tweet[]; totalPages: number; currentPage: number }) => {
-      setTweets(data);
-    });
+    };
+
+    // const handleTweets = (data: {
+    //   newTweets: Tweet[];
+    //   totalPages: number;
+    //   currentPage: number;
+    // }) => {
+    //   setTweets(data);
+    // };
+
+    socket.on("hvals", handleHvals);
+    // socket.on("tweets", handleTweets);
+
+    return () => {
+      socket.off("hvals", handleHvals);
+      // socket.off("tweets", handleTweets);
+    };
   }, []);
 
   return (
