@@ -1,15 +1,8 @@
 export interface DataProps {
-  gauge: number;
   mode: string;
   keywords: {
     _id?: string;
     kw_string: string;
-  }[];
-  isLoading: boolean;
-  hvals: {
-    _id?: string;
-    final_gauge: number;
-    post_date: string;
   }[];
   tweets: {
     newTweets: Tweet[];
@@ -42,4 +35,24 @@ export interface TweetMetricProps {
   likes: { post_date: string; num_likes: number }[];
   retweets: { post_date: string; num_retweets: number }[];
   replies: { post_date: string; num_replies: number }[];
+}
+
+export interface Hval {
+  _id?: string;
+  final_gauge: number;
+  post_date: string;
+}
+
+export interface DashboardProps {
+  gauge: number;
+  keywords: {
+    _id?: string;
+    kw_string: string;
+  }[];
+  isLoading: boolean;
+  hvals: {
+    _id?: string;
+    final_gauge: number;
+    post_date: string;
+  }[];
 }

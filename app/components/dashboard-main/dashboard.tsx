@@ -1,37 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AuthButton from "../auth-component/AuthButton";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { socket } from "@/app/socket";
 
 // UI
 import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/dashboard-main/ui/card";
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   AreaChart,
   Area,
 } from "recharts";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/app/components/dashboard-main/ui/table";
+
 // components
 import { DangerGauge } from "./danger-gauge";
 // types
-import { DataProps } from "@/app/types";
+import { DataProps, Tweet, Hval } from "@/app/types";
 
 // Sample data - replace this with your actual data
 const tweetData = [
@@ -42,14 +33,52 @@ const tweetData = [
   { id: 5, Keyword: "Mekong River", Tweets: 25, dangerLevel: 15, date: "2023-06-05" },
 ];
 
-export function Dashboard({ gauge, keywords = [], hvals, tweets }: DataProps) {
-  const { newTweets } = tweets;
+export function Dashboard() {
+  const [gauge, setGauge] = useState(0);
+  const [hvals, setHvals] = useState<Hval[]>([]);
+  const [tweets, setTweets] = useState<{
+    newTweets: Tweet[];
+    totalPages: number;
+    currentPage: number;
+  }>({
+    newTweets: [],
+    totalPages: 1,
+    currentPage: 1,
+  });
+
   const { data: session, status } = useSession();
-  const sortedQueryKw = Array.from(
-    new Map(newTweets.map((tweet) => [tweet.query_kw, tweet])).values()
-  );
+
   console.log("gauge", gauge);
   console.log(hvals);
+
+  // formatted data for danger graph
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return `${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  // get hval data
+  useEffect(() => {
+    socket.on("hvals", (receivedHvals: Hval[]) => {
+      const formattedHvals = receivedHvals.map((hval) => ({
+        ...hval,
+        post_date: formatDate(hval.post_date),
+      }));
+      if (formattedHvals.length > 0) {
+        setGauge(formattedHvals[0].final_gauge);
+      }
+
+      setHvals(formattedHvals);
+    });
+    socket.on("tweets", (data: { newTweets: Tweet[]; totalPages: number; currentPage: number }) => {
+      setTweets(data);
+    });
+  }, []);
+
   return (
     <div className=' bg-black'>
       <AuthButton />
