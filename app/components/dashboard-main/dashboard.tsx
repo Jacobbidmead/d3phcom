@@ -36,15 +36,6 @@ const tweetData = [
 export function Dashboard() {
   const [gauge, setGauge] = useState(0);
   const [hvals, setHvals] = useState<Hval[]>([]);
-  const [tweets, setTweets] = useState<{
-    newTweets: Tweet[];
-    totalPages: number;
-    currentPage: number;
-  }>({
-    newTweets: [],
-    totalPages: 1,
-    currentPage: 1,
-  });
 
   const { data: session, status } = useSession();
 
@@ -74,20 +65,10 @@ export function Dashboard() {
       setHvals(formattedHvals);
     };
 
-    // const handleTweets = (data: {
-    //   newTweets: Tweet[];
-    //   totalPages: number;
-    //   currentPage: number;
-    // }) => {
-    //   setTweets(data);
-    // };
-
     socket.on("hvals", handleHvals);
-    // socket.on("tweets", handleTweets);
 
     return () => {
       socket.off("hvals", handleHvals);
-      // socket.off("tweets", handleTweets);
     };
   }, []);
 

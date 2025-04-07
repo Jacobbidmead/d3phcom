@@ -13,7 +13,7 @@ const Tweets: React.FC = () => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch tweets for the current pagem, is this being used?
+  // Fetch tweets for the current page
   const fetchTweets = (page: number) => {
     setIsLoading(true);
     socket.emit("getTweets", { page, limit: 9 });
@@ -42,11 +42,7 @@ const Tweets: React.FC = () => {
   return (
     <div className='bg-black  flex align-middle justify-center text-gray-400 m:mt-8 xxs:pt-10 xl:pt-20 '>
       <div className='p-4 flex items-center'>
-        <PaginatedCardList
-          tweets={tweets}
-          onPageChange={handlePageChange}
-          isLoading={isLoading} // Pass the loading state to the child component
-        />
+        <PaginatedCardList tweets={tweets} onPageChange={handlePageChange} isLoading={isLoading} />
       </div>
     </div>
   );

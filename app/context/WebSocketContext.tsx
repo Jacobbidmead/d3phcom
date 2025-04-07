@@ -1,4 +1,3 @@
-// src/context/WebSocketContext.tsx
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -16,7 +15,7 @@ interface WebSocketContextData {
     totalPages: number;
     currentPage: number;
   };
-  fetchPage: (page: number) => void;
+  // fetchPage: (page: number) => void;
 }
 
 const WebSocketContext = createContext<WebSocketContextData | undefined>(undefined);
@@ -39,9 +38,9 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
   });
 
   // fetch page for pagination
-  const fetchPage = (page: number) => {
-    socket.emit("getTweets", { page });
-  };
+  // const fetchPage = (page: number) => {
+  //   socket.emit("getTweets", { page });
+  // };
 
   useEffect(() => {
     socket.on("connect", () => setIsConnected(true));
@@ -78,7 +77,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
         keywords,
         isLoading,
         tweets,
-        fetchPage,
+        // fetchPage,
       }}>
       {children}
     </WebSocketContext.Provider>
